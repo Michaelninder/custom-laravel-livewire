@@ -11,6 +11,16 @@
             {{ session('settings_updated') ?? session('status_updated') }}
         </div>
     @endif
+    @if (session()->has('info'))
+        <div class="bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 p-4 rounded-md mb-4">
+            {{ session('info') }}
+        </div>
+    @endif
+    @if (session()->has('error'))
+        <div class="bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 p-4 rounded-md mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <div class="bg-white dark:bg-zinc-800 shadow-md rounded-lg p-6 flex-grow flex flex-col md:flex-row gap-6">
         {{-- Chat/Messages Section --}}
@@ -43,33 +53,36 @@
                         $avatarOrder = '';
                         $contentOrder = '';
 
-                        // Determine position
-                        if ($isAuthAdmin) {
-                            if ($isAdminUser) {
-                                $wrapperClasses .= ' justify-end';
-                                $avatarOrder = 'order-2 ml-2';
-                                $contentOrder = 'order-1';
-                            } else {
-                                $wrapperClasses .= ' justify-start';
-                                $avatarOrder = 'order-1 mr-2';
-                                $contentOrder = 'order-2';
-                            }
+                        if ($isLogMessage) {
+                             // No avatar or specific ordering for log messages
                         } else {
-                            if ($isAuthUser) {
-                                $wrapperClasses .= ' justify-end';
-                                $avatarOrder = 'order-2 ml-2';
-                                $contentOrder = 'order-1';
+                            if ($isAuthAdmin) {
+                                if ($isAdminUser) {
+                                    $wrapperClasses .= ' justify-end';
+                                    $avatarOrder = 'order-2 ml-2';
+                                    $contentOrder = 'order-1';
+                                } else {
+                                    $wrapperClasses .= ' justify-start';
+                                    $avatarOrder = 'order-1 mr-2';
+                                    $contentOrder = 'order-2';
+                                }
                             } else {
-                                $wrapperClasses .= ' justify-start';
-                                $avatarOrder = 'order-1 mr-2';
-                                $contentOrder = 'order-2';
+                                if ($isAuthUser) {
+                                     $wrapperClasses .= ' justify-end';
+                                     $avatarOrder = 'order-2 ml-2';
+                                     $contentOrder = 'order-1';
+                                } else {
+                                     $wrapperClasses .= ' justify-start';
+                                     $avatarOrder = 'order-1 mr-2';
+                                     $contentOrder = 'order-2';
+                                }
                             }
                         }
                     @endphp
 
                     @if ($isLogMessage)
                         <div class="{{ $wrapperClasses }}">
-                            <p class="{{ $bubbleClasses }}">{{ Str::after($message->message, '[LOG] ') }}</p>
+                            <p class="{{ $bubbleClasses }} whitespace-pre-wrap">{{ Str::after($message->message, '[LOG] ') }}</p>
                         </div>
                     @else
                         <div class="{{ $wrapperClasses }}">
@@ -89,8 +102,20 @@
             </div>
 
             <form wire:submit.prevent="sendMessage" class="mt-4 flex items-center gap-2">
-                <textarea wire:model.live="messageContent" placeholder="{{ __('Type your message...') }}" rows="2" class="p-2 flex-grow rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-zinc-700 dark:border-zinc-600 dark:text-gray-100 focus:outline-none"></textarea>
-                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">{{ __('Send') }}</button>
+                <textarea
+                    wire:model.live="messageContent"
+                    placeholder="{{ __('Type your message...') }}"
+                    rows="2"
+                    class="p-2 flex-grow rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-zinc-700 dark:border-zinc-600 dark:text-gray-100 focus:outline-none"
+                    @if($ticket->status === 'closed' || $ticket->status === 'resolved') disabled @endif
+                ></textarea>
+                <button
+                    type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    @if($ticket->status === 'closed' || $ticket->status === 'resolved') disabled @endif
+                >
+                    {{ __('Send') }}
+                </button>
             </form>
             @error('messageContent') <span class="text-red-500 text-sm block mt-1">{{ $message }}</span> @enderror
         </div>
