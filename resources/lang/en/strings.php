@@ -28,4 +28,8 @@ return [
     'language_german' => 'Deutsch',
     'language_french' => 'Français',
     'user' => 'User',
+    'total_users' => 'Total Users',
+    'total_tickets' => 'Total Tickets',
+    'open_tickets' => 'Open Tickets',
+    'closed_tickets' => 'Closed Tickets',
 ];

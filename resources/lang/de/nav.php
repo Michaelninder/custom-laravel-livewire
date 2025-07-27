@@ -11,4 +11,5 @@ return [
     'preferences' => 'Präferenzen',
     'logout' => 'Abmelden',
     'platform_group' => 'Plattform',
+    'admin_dashboard' => 'Admin-Dashboard',
 ];

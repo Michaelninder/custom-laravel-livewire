@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Support\TicketsIndex;
 use App\Livewire\Support\CreateTicket;
 use App\Livewire\Support\TicketShow;
+//use App\Livewire\Admin\SiteSettings as AdminSiteSettings;
+//use App\Livewire\Admin\Dashboard as AdminDashboard;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,6 +40,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tickets', TicketsIndex::class)->name('tickets.index');
         Route::get('tickets/create', CreateTicket::class)->name('tickets.create');
         Route::get('tickets/{ticket}', TicketShow::class)->name('tickets.show');
+    });
+
+
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        //Route::get('dashboard', AdminDashboard::class)->name('dashboard');
+        //Route::get('settings', AdminSiteSettings::class)->name('settings');
+        Route::get('dashboard', \App\Livewire\Admin\Dashboard::class)->name('dashboard');
+        Route::get('settings', \App\Livewire\Admin\SiteSettings::class)->name('settings');
     });
 });
 
