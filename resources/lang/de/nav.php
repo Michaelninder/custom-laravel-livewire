@@ -12,4 +12,7 @@ return [
     'logout' => 'Abmelden',
     'platform_group' => 'Plattform',
     'admin_dashboard' => 'Admin-Dashboard',
+    'admin_area' => 'Admin-Bereich',
+    'admin_dashboard' => 'Admin-Dashboard',
+    'admin_site_settings' => 'Seiten-Einstellungen',
 ];

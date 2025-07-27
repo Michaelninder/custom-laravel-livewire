@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Validation\Rule;
 
-#[Layout('layouts.app')]
+#[Layout('components.layouts.admin')]
 class SiteSettings extends Component
 {
     public array $settings = [];

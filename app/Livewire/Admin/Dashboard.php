@@ -7,7 +7,7 @@ use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\SupportTicket;
 
-#[Layout('layouts.app')]
+#[Layout('components.layouts.admin')]
 class Dashboard extends Component
 {
     public int $totalUsers;

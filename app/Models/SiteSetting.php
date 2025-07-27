@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SiteSetting extends Model
 {
+    use HasFactory;
 
     protected $primaryKey = 'key';
     public $incrementing = false;
@@ -41,7 +44,7 @@ class SiteSetting extends Model
         $defaultSettings = [
             'nav_type' => [
                 'value' => null,
-                'default_value' => 'sidebar', // 'sidebar' or 'topbar'
+                'default_value' => 'sidebar',
                 'description' => 'Determines if the main navigation is a sidebar or a top bar.',
                 'type' => 'enum',
                 'options' => ['sidebar', 'topbar'],
@@ -62,16 +65,16 @@ class SiteSetting extends Model
         ];
 
         foreach ($defaultSettings as $key => $data) {
-            if (!static::where('key', $key)->exists()) {
-                static::create([
-                    'key' => $key,
+            static::updateOrCreate(
+                ['key' => $key],
+                [
                     'value' => $data['value'],
                     'default_value' => $data['default_value'],
                     'description' => $data['description'],
                     'type' => $data['type'],
-                    'data' => ($data['type'] === 'enum') ? json_encode(['options' => $data['options']]) : null,
-                ]);
-            }
+                    'data' => ($data['type'] === 'enum' && isset($data['options'])) ? ['options' => $data['options']] : null,
+                ]
+            );
         }
     }
 }

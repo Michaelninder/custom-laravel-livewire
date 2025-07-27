@@ -12,4 +12,7 @@ return [
     'logout' => 'Log Out',
     'platform_group' => 'Platform',
     'admin_dashboard' => 'Admin Dashboard',
+    'admin_area' => 'Admin Area',
+    'admin_dashboard' => 'Admin Dashboard',
+    'admin_site_settings' => 'Site Settings',
 ];
