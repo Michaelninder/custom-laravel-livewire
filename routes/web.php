@@ -5,6 +5,9 @@ use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\UserPreferences;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Support\TicketsIndex;
+use App\Livewire\Support\CreateTicket;
+use App\Livewire\Support\TicketShow;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,8 +34,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     Route::get('settings/preferences', UserPreferences::class)->name('settings.preferences');
 
-    // Route::get('support/tickets', []])->name('support.tickets.index');
-    // Route::get('support/tickets/{ticket}', [])->name('support.tickets.show');
+    Route::prefix('support')->name('support.')->group(function () {
+        Route::get('tickets', TicketsIndex::class)->name('tickets.index');
+        Route::get('tickets/create', CreateTicket::class)->name('tickets.create');
+        Route::get('tickets/{ticket}', TicketShow::class)->name('tickets.show'); // Uses route model binding
+    });
 });
 
 require __DIR__.'/auth.php';
