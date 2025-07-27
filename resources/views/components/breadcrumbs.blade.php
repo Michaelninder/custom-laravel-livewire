@@ -7,7 +7,7 @@
                 $isAdminRoute = request()->routeIs('admin.*');
                 $isAdminMainRoute = request()->routeIs('admin.dashboard');
                 $dashboardRoute = $isAdminRoute ? route('admin.dashboard') : route('dashboard');
-                $dashboardLabel = $isAdminRoute ? __('nav.admin_dashboard') : __('nav.dashboard');
+                $dashboardLabel = $isAdminRoute ? __('nav.admin_area') : __('nav.dashboard');
             @endphp
             <a href="{{ $dashboardRoute }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
                 <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
