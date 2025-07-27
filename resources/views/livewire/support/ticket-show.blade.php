@@ -24,7 +24,7 @@
                         $isAuthAdmin = Auth::user()->isAdmin();
 
                         $bubbleClasses = 'max-w-[80%] rounded-xl p-3 shadow-sm';
-                        $wrapperClasses = 'flex';
+                        $wrapperClasses = 'flex items-start';
                         $timestampClasses = 'font-normal text-[10px] ml-2';
 
                         // Base coloring
@@ -37,27 +37,33 @@
                         }
 
                         // Positioning logic
+                        $avatarOrder = '';
                         if ($isAuthAdmin) {
                             if ($isAdminUser) {
                                 $wrapperClasses .= ' justify-end';
+                                $avatarOrder = 'order-2 ml-2';
                             } else {
                                 $wrapperClasses .= ' justify-start';
+                                $avatarOrder = 'order-1 mr-2';
                             }
                         } else {
                             if ($isAuthUser) {
                                  $wrapperClasses .= ' justify-end';
+                                 $avatarOrder = 'order-2 ml-2';
                             } else {
                                  $wrapperClasses .= ' justify-start';
+                                 $avatarOrder = 'order-1 mr-2';
                             }
                         }
                     @endphp
                     <div class="{{ $wrapperClasses }}">
+                        <img class="h-8 w-8 rounded-full object-cover {{ $avatarOrder }}" src="{{ $message->user->avatar }}" alt="{{ $message->user->username }}">
                         <div class="{{ $bubbleClasses }}">
                             <p class="text-xs font-semibold {{ $isAuthUser ? 'text-white' : 'text-gray-700 dark:text-gray-300' }}">
                                 {{ $message->user->username }}
                                 <span class="{{ $timestampClasses }}">{{ $message->created_at->format('M d, H:i') }}</span>
                             </p>
-                            <p class="mt-1 {{ $isAuthUser ? 'text-white' : 'text-gray-800 dark:text-gray-200' }}">{{ $message->message }}</p>
+                            <p class="mt-1 {{ $isAuthUser ? 'text-white' : 'text-gray-800 dark:text-gray-200' }} whitespace-pre-wrap">{{ $message->message }}</p>
                         </div>
                     </div>
                 @empty
@@ -92,7 +98,6 @@
             @else
                 <button wire:click="closeTicket" class="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-center">{{ __('Close Ticket') }}</button>
             @endif
-
 
             @if (Auth::user()->isAdmin())
                 <div class="mt-6 space-y-4 pt-4 border-t border-gray-200 dark:border-zinc-600">
