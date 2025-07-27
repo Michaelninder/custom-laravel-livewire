@@ -45,11 +45,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -59,10 +54,6 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Get the user's initials.
-     * Uses name_first and name_last, or falls back to username.
-     */
     public function initials(): string
     {
         $initials = '';
@@ -81,11 +72,10 @@ class User extends Authenticatable
              $initials = Str::upper(Str::substr($this->email, 0, 1));
         }
 
-
         return $initials;
     }
 
-    public function getAvatarAttribute()
+    public function getAvatarAttribute(): string
     {
         if ($this->avatar_url) {
             return $this->avatar_url;
@@ -106,6 +96,7 @@ class User extends Authenticatable
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=mp';
     }
 
+
     public function getSetting(string $key, $default = null)
     {
         return $this->settings[$key] ?? $default;
@@ -118,9 +109,9 @@ class User extends Authenticatable
         $this->settings = $settings;
     }
 
+    // primary display name
     public function getDisplayNameAttribute(): string
     {
-        // Prioritize full name, then username, then email if nothing else
         if (!empty($this->name_first) || !empty($this->name_last)) {
             return trim($this->name_first . ' ' . $this->name_last);
         }
@@ -129,7 +120,7 @@ class User extends Authenticatable
             return $this->username;
         }
 
-        return $this->email; // Fallback to email if no name or username
+        return $this->email;
     }
 
     public function getProfileLinkAttribute(): string
@@ -185,12 +176,5 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function getNameDisplayedAttribute(): string
-    {
-        if (!empty($this->name_first) || !empty($this->name_last)) {
-            return trim($this->name_first . ' ' . $this->name_last);
-        }
-
-        return $this->username;
-    }
+    // Removed getNameDisplayedAttribute() as getDisplayNameAttribute() serves this purpose.
 }
