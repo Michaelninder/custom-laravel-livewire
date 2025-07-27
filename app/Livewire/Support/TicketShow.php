@@ -18,6 +18,9 @@ class TicketShow extends Component
     public ?string $selectedPriority = null;
     public ?string $selectedAgentId = null;
 
+    public ?string $flashMessageType = null;
+    public ?string $flashMessage = null;
+
     protected array $rules = [
         'messageContent' => 'required|string|max:2000',
     ];
@@ -37,7 +40,7 @@ class TicketShow extends Component
     public function sendMessage(): void
     {
         if ($this->ticket->status === 'closed' || $this->ticket->status === 'resolved') {
-            session()->flash('error', __('Cannot send messages on a closed or resolved ticket. Please reopen it.'));
+            $this->dispatchMessage('error', __('Cannot send messages on a closed or resolved ticket. Please reopen it.'));
             return;
         }
 
@@ -109,10 +112,10 @@ class TicketShow extends Component
                 $logMessage .= "\n- " . $part;
             }
             $this->createLogMessage($logMessage);
-            session()->flash('settings_updated', __('Ticket settings updated successfully.'));
+            $this->dispatchMessage('success', __('Ticket settings updated successfully.'));
             $this->dispatch('messageSent');
         } else {
-            session()->flash('info', __('No changes detected.'));
+            $this->dispatchMessage('info', __('No changes detected.'));
         }
     }
 
@@ -126,10 +129,10 @@ class TicketShow extends Component
             $this->ticket->update(['status' => 'closed', 'last_replied_at' => now()]);
             $this->selectedStatus = 'closed';
             $this->createLogMessage(Auth::user()->display_name . ' ' . __('closed the ticket.'));
-            session()->flash('status_updated', __('Ticket has been closed.'));
+            $this->dispatchMessage('success', __('Ticket has been closed.'));
             $this->dispatch('messageSent');
         } else {
-            session()->flash('info', __('Ticket is already closed.'));
+            $this->dispatchMessage('info', __('Ticket is already closed.'));
         }
     }
 
@@ -143,10 +146,10 @@ class TicketShow extends Component
             $this->ticket->update(['status' => 'open', 'last_replied_at' => now()]);
             $this->selectedStatus = 'open';
             $this->createLogMessage(Auth::user()->display_name . ' ' . __('reopened the ticket.'));
-            session()->flash('status_updated', __('Ticket has been reopened.'));
+            $this->dispatchMessage('success', __('Ticket has been reopened.'));
             $this->dispatch('messageSent');
         } else {
-            session()->flash('info', __('Ticket is not closed or resolved.'));
+            $this->dispatchMessage('info', __('Ticket is not closed or resolved.'));
         }
     }
 
@@ -157,6 +160,11 @@ class TicketShow extends Component
             'user_id' => Auth::id(),
             'message' => '[LOG] ' . $logText,
         ]);
+    }
+
+    private function dispatchMessage(string $type, string $message): void
+    {
+        $this->dispatch('show-flash-message', type: $type, message: $message);
     }
 
     public function getListeners()
