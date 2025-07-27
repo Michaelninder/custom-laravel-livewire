@@ -49,4 +49,30 @@
             <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
         </div>
     @endif
+    <div class="mt-6 border-t border-gray-200 pt-6">
+        <p class="text-center text-gray-500 mb-4">Or login with social accounts</p>
+        <div class="flex justify-center space-x-4">
+            <a href="{{ route('socialite.redirect', ['provider' => 'github']) }}"
+               class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                <img src="/images/github-logo.svg" alt="GitHub" class="h-5 w-5 mr-2">
+                GitHub
+            </a>
+            <a href="{{ route('socialite.redirect', ['provider' => 'discord']) }}"
+               class="flex items-center justify-center px-4 py-2 border border-blue-600 rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                <img src="/images/discord-logo.svg" alt="Discord" class="h-5 w-5 mr-2">
+                Discord
+            </a>
+            <a href="{{ route('socialite.redirect', ['provider' => 'twitch']) }}"
+               class="flex items-center justify-center px-4 py-2 border border-purple-600 rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700">
+                <img src="/images/twitch-logo.svg" alt="Twitch" class="h-5 w-5 mr-2">
+                Twitch
+            </a>
+        </div>
+    </div>
+
+    @if (session('error'))
+        <div class="mt-4 text-red-500 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
 </div>
