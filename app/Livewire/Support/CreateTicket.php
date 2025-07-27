@@ -4,6 +4,7 @@ namespace App\Livewire\Support;
 
 use App\Models\SupportTicket;
 use App\Models\SupportMessage;
+use App\Models\SupportLog;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +27,6 @@ class CreateTicket extends Component
         $ticket = SupportTicket::create([
             'user_id' => Auth::id(),
             'subject' => $validated['subject'],
-            // 'description'
             'priority' => $validated['priority'],
             'status' => 'open',
             'last_replied_at' => now(),
@@ -36,6 +36,12 @@ class CreateTicket extends Component
             'support_ticket_id' => $ticket->id,
             'user_id' => Auth::id(),
             'message' => $validated['first_message'],
+        ]);
+
+        SupportLog::create([
+            'support_ticket_id' => $ticket->id,
+            'user_id' => Auth::id(),
+            'type' => 'ticket_created',
         ]);
 
         session()->flash('success', __('Your support ticket has been created!'));

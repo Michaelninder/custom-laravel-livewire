@@ -40,4 +40,9 @@ class SupportTicket extends Model
     {
         return $this->hasMany(SupportMessage::class);
     }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(SupportLog::class);
+    }
 }

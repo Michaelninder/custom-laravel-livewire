@@ -4,10 +4,12 @@ namespace App\Livewire\Support;
 
 use App\Models\SupportTicket;
 use App\Models\SupportMessage;
+use App\Models\SupportLog;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class TicketShow extends Component
 {
@@ -17,9 +19,6 @@ class TicketShow extends Component
     public ?string $selectedStatus = null;
     public ?string $selectedPriority = null;
     public ?string $selectedAgentId = null;
-
-    public ?string $flashMessageType = null;
-    public ?string $flashMessage = null;
 
     protected array $rules = [
         'messageContent' => 'required|string|max:2000',
@@ -40,7 +39,7 @@ class TicketShow extends Component
     public function sendMessage(): void
     {
         if ($this->ticket->status === 'closed' || $this->ticket->status === 'resolved') {
-            $this->dispatchMessage('error', __('Cannot send messages on a closed or resolved ticket. Please reopen it.'));
+            session()->flash('error', __('Cannot send messages on a closed or resolved ticket. Please reopen it.'));
             return;
         }
 
@@ -75,47 +74,55 @@ class TicketShow extends Component
         $oldAssignedTo = $this->ticket->assigned_to;
 
         $updatesMade = false;
-        $logMessageParts = [];
-        $performer = Auth::user()->display_name;
 
         if ($oldStatus !== $this->selectedStatus) {
             $this->ticket->status = $this->selectedStatus;
             $updatesMade = true;
-            $logMessageParts[] = __('status changed from :old to :new', [
-                'old' => __($oldStatus),
-                'new' => __($this->selectedStatus)
+            SupportLog::create([
+                'support_ticket_id' => $this->ticket->id,
+                'user_id' => Auth::id(),
+                'type' => 'status_change',
+                'data' => [
+                    'old_status' => $oldStatus,
+                    'new_status' => $this->selectedStatus,
+                ],
             ]);
         }
         if ($oldPriority !== $this->selectedPriority) {
             $this->ticket->priority = $this->selectedPriority;
             $updatesMade = true;
-            $logMessageParts[] = __('priority changed from :old to :new', [
-                'old' => __($oldPriority),
-                'new' => __($this->selectedPriority)
+            SupportLog::create([
+                'support_ticket_id' => $this->ticket->id,
+                'user_id' => Auth::id(),
+                'type' => 'priority_change',
+                'data' => [
+                    'old_priority' => $oldPriority,
+                    'new_priority' => $this->selectedPriority,
+                ],
             ]);
         }
         if ($oldAssignedTo !== $this->selectedAgentId) {
             $this->ticket->assigned_to = $this->selectedAgentId;
             $updatesMade = true;
-            $oldAgentName = User::find($oldAssignedTo)?->display_name ?? __('None');
-            $newAgentName = User::find($this->selectedAgentId)?->display_name ?? __('None');
-            $logMessageParts[] = __('assigned to changed from :old to :new', [
-                'old' => $oldAgentName,
-                'new' => $newAgentName
+            SupportLog::create([
+                'support_ticket_id' => $this->ticket->id,
+                'user_id' => Auth::id(),
+                'type' => 'assignment_change',
+                'data' => [
+                    'old_agent_id' => $oldAssignedTo,
+                    'old_agent_name' => User::find($oldAssignedTo)?->display_name ?? __('None'),
+                    'new_agent_id' => $this->selectedAgentId,
+                    'new_agent_name' => User::find($this->selectedAgentId)?->display_name ?? __('None'),
+                ],
             ]);
         }
 
         if ($updatesMade) {
             $this->ticket->save();
-            $logMessage = $performer . ' ' . __('updated ticket:');
-            foreach ($logMessageParts as $part) {
-                $logMessage .= "\n- " . $part;
-            }
-            $this->createLogMessage($logMessage);
-            $this->dispatchMessage('success', __('Ticket settings updated successfully.'));
+            session()->flash('settings_updated', __('Ticket settings updated successfully.'));
             $this->dispatch('messageSent');
         } else {
-            $this->dispatchMessage('info', __('No changes detected.'));
+            session()->flash('info', __('No changes detected.'));
         }
     }
 
@@ -128,11 +135,15 @@ class TicketShow extends Component
         if ($this->ticket->status !== 'closed') {
             $this->ticket->update(['status' => 'closed', 'last_replied_at' => now()]);
             $this->selectedStatus = 'closed';
-            $this->createLogMessage(Auth::user()->display_name . ' ' . __('closed the ticket.'));
-            $this->dispatchMessage('success', __('Ticket has been closed.'));
+            SupportLog::create([
+                'support_ticket_id' => $this->ticket->id,
+                'user_id' => Auth::id(),
+                'type' => 'closed_ticket',
+            ]);
+            session()->flash('status_updated', __('Ticket has been closed.'));
             $this->dispatch('messageSent');
         } else {
-            $this->dispatchMessage('info', __('Ticket is already closed.'));
+            session()->flash('info', __('Ticket is already closed.'));
         }
     }
 
@@ -145,26 +156,16 @@ class TicketShow extends Component
         if ($this->ticket->status === 'closed' || $this->ticket->status === 'resolved') {
             $this->ticket->update(['status' => 'open', 'last_replied_at' => now()]);
             $this->selectedStatus = 'open';
-            $this->createLogMessage(Auth::user()->display_name . ' ' . __('reopened the ticket.'));
-            $this->dispatchMessage('success', __('Ticket has been reopened.'));
+            SupportLog::create([
+                'support_ticket_id' => $this->ticket->id,
+                'user_id' => Auth::id(),
+                'type' => 'reopened_ticket',
+            ]);
+            session()->flash('status_updated', __('Ticket has been reopened.'));
             $this->dispatch('messageSent');
         } else {
-            $this->dispatchMessage('info', __('Ticket is not closed or resolved.'));
+            session()->flash('info', __('Ticket is not closed or resolved.'));
         }
-    }
-
-    private function createLogMessage(string $logText): void
-    {
-        SupportMessage::create([
-            'support_ticket_id' => $this->ticket->id,
-            'user_id' => Auth::id(),
-            'message' => '[LOG] ' . $logText,
-        ]);
-    }
-
-    private function dispatchMessage(string $type, string $message): void
-    {
-        $this->dispatch('show-flash-message', type: $type, message: $message);
     }
 
     public function getListeners()
@@ -174,7 +175,16 @@ class TicketShow extends Component
 
     public function render()
     {
-        $this->ticket->load(['messages.user', 'user', 'assignedAgent']);
+        $this->ticket->load(['messages.user', 'user', 'assignedAgent', 'logs.user']);
+
+        $combinedFeed = $this->ticket->messages->map(function ($item) {
+            $item->is_log = false;
+            return $item;
+        })->merge($this->ticket->logs->map(function ($item) {
+            $item->is_log = true;
+            return $item;
+        }))->sortBy('created_at');
+
 
         $supportAgents = [];
         if (Auth::user()->isAdmin()) {
@@ -190,6 +200,7 @@ class TicketShow extends Component
         return view('livewire.support.ticket-show', [
             'supportAgents' => $supportAgents,
             'breadcrumbs' => $breadcrumbs,
+            'combinedFeed' => $combinedFeed,
         ]);
     }
 }
