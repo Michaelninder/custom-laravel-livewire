@@ -55,8 +55,8 @@ class TicketsIndex extends Component
         $tickets = $query->latest('last_replied_at')->paginate(10);
 
         $breadcrumbs = [
-            ['label' => __('Support'), 'url' => route('support.tickets.index')],
-            ['label' => __('Tickets')],
+            ['label' => __('support.general_title'), 'url' => route('support.tickets.index')],
+            ['label' => __('strings.tickets')],
         ];
 
         return view('livewire.support.tickets-index', [

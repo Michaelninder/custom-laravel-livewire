@@ -44,7 +44,7 @@ class CreateTicket extends Component
             'type' => 'ticket_created',
         ]);
 
-        session()->flash('success', __('Your support ticket has been created!'));
+        session()->flash('success', __('support.ticket_created_success'));
 
         $this->redirect(route('support.tickets.show', $ticket), navigate: true);
     }
@@ -52,9 +52,9 @@ class CreateTicket extends Component
     public function render()
     {
         $breadcrumbs = [
-            ['label' => __('Support'), 'url' => route('support.tickets.index')],
-            ['label' => __('Tickets'), 'url' => route('support.tickets.index')],
-            ['label' => __('Create New Ticket')],
+            ['label' => __('support.general_title'), 'url' => route('support.tickets.index')],
+            ['label' => __('strings.tickets'), 'url' => route('support.tickets.index')],
+            ['label' => __('support.create_ticket_title')],
         ];
 
         return view('livewire.support.create-ticket', ['breadcrumbs' => $breadcrumbs]);

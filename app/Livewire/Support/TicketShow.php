@@ -9,7 +9,6 @@ use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
 class TicketShow extends Component
 {
@@ -39,7 +38,7 @@ class TicketShow extends Component
     public function sendMessage(): void
     {
         if ($this->ticket->status === 'closed' || $this->ticket->status === 'resolved') {
-            session()->flash('error', __('Cannot send messages on a closed or resolved ticket. Please reopen it.'));
+            session()->flash('error', __('support.cannot_send_on_closed'));
             return;
         }
 
@@ -110,19 +109,19 @@ class TicketShow extends Component
                 'type' => 'assignment_change',
                 'data' => [
                     'old_agent_id' => $oldAssignedTo,
-                    'old_agent_name' => User::find($oldAssignedTo)?->display_name ?? __('None'),
+                    'old_agent_name' => User::find($oldAssignedTo)?->display_name ?? __('strings.none'),
                     'new_agent_id' => $this->selectedAgentId,
-                    'new_agent_name' => User::find($this->selectedAgentId)?->display_name ?? __('None'),
+                    'new_agent_name' => User::find($this->selectedAgentId)?->display_name ?? __('strings.none'),
                 ],
             ]);
         }
 
         if ($updatesMade) {
             $this->ticket->save();
-            session()->flash('settings_updated', __('Ticket settings updated successfully.'));
+            session()->flash('settings_updated', __('support.settings_updated_success'));
             $this->dispatch('messageSent');
         } else {
-            session()->flash('info', __('No changes detected.'));
+            session()->flash('info', __('strings.no_changes_detected'));
         }
     }
 
@@ -140,10 +139,10 @@ class TicketShow extends Component
                 'user_id' => Auth::id(),
                 'type' => 'closed_ticket',
             ]);
-            session()->flash('status_updated', __('Ticket has been closed.'));
+            session()->flash('status_updated', __('support.ticket_closed_success'));
             $this->dispatch('messageSent');
         } else {
-            session()->flash('info', __('Ticket is already closed.'));
+            session()->flash('info', __('support.ticket_already_closed'));
         }
     }
 
@@ -161,10 +160,10 @@ class TicketShow extends Component
                 'user_id' => Auth::id(),
                 'type' => 'reopened_ticket',
             ]);
-            session()->flash('status_updated', __('Ticket has been reopened.'));
+            session()->flash('status_updated', __('support.ticket_reopened_success'));
             $this->dispatch('messageSent');
         } else {
-            session()->flash('info', __('Ticket is not closed or resolved.'));
+            session()->flash('info', __('support.ticket_not_closed_resolved'));
         }
     }
 
@@ -185,15 +184,14 @@ class TicketShow extends Component
             return $item;
         }))->sortBy('created_at');
 
-
         $supportAgents = [];
         if (Auth::user()->isAdmin()) {
             $supportAgents = User::where('role', 'admin')->get(['id', 'display_name']);
         }
 
         $breadcrumbs = [
-            ['label' => __('Support'), 'url' => route('support.tickets.index')],
-            ['label' => __('Tickets'), 'url' => route('support.tickets.index')],
+            ['label' => __('support.general_title'), 'url' => route('support.tickets.index')],
+            ['label' => __('strings.tickets'), 'url' => route('support.tickets.index')],
             ['label' => $this->ticket->subject],
         ];
 

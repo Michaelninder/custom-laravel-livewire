@@ -34,34 +34,34 @@ class SupportLog extends Model
 
     public function getFormattedMessageAttribute(): string
     {
-        $userName = $this->user ? $this->user->display_name : __('System');
+        $userName = $this->user ? $this->user->display_name : __('strings.system');
         $data = $this->data ?? [];
 
         switch ($this->type) {
             case 'status_change':
-                return __(':user changed status from :old_status to :new_status.', [
+                return __('support.log_status_change', [
                     'user' => $userName,
-                    'old_status' => __($data['old_status']),
-                    'new_status' => __($data['new_status']),
+                    'old_status' => __('strings.status_' . $data['old_status']),
+                    'new_status' => __('strings.status_' . $data['new_status']),
                 ]);
             case 'priority_change':
-                return __(':user changed priority from :old_priority to :new_priority.', [
+                return __('support.log_priority_change', [
                     'user' => $userName,
-                    'old_priority' => __($data['old_priority']),
-                    'new_priority' => __($data['new_priority']),
+                    'old_priority' => __('strings.priority_' . $data['old_priority']),
+                    'new_priority' => __('strings.priority_' . $data['new_priority']),
                 ]);
             case 'assignment_change':
-                return __(':user changed assignment from :old_agent to :new_agent.', [
+                return __('support.log_assignment_change', [
                     'user' => $userName,
-                    'old_agent' => $data['old_agent_name'] ?? __('None'),
-                    'new_agent' => $data['new_agent_name'] ?? __('None'),
+                    'old_agent' => $data['old_agent_name'] ?? __('strings.none'),
+                    'new_agent' => $data['new_agent_name'] ?? __('strings.none'),
                 ]);
             case 'closed_ticket':
-                return __(':user closed the ticket.', ['user' => $userName]);
+                return __('support.log_closed_ticket', ['user' => $userName]);
             case 'reopened_ticket':
-                return __(':user reopened the ticket.', ['user' => $userName]);
+                return __('support.log_reopened_ticket', ['user' => $userName]);
             case 'ticket_created':
-                return __(':user created the ticket.', ['user' => $userName]);
+                return __('support.log_ticket_created', ['user' => $userName]);
             default:
                 return __(':user performed an action.', ['user' => $userName]);
         }
