@@ -13,12 +13,11 @@ use Livewire\Component;
 #[Layout('components.layouts.auth')]
 class Register extends Component
 {
-    public string $name = '';
-
+    public string $username = '';
+    public string $name_first = '';
+    public string $name_last = '';
     public string $email = '';
-
     public string $password = '';
-
     public string $password_confirmation = '';
 
     /**
@@ -27,17 +26,30 @@ class Register extends Component
     public function register(): void
     {
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class], // Validate username for uniqueness
+            'name_first' => ['nullable', 'string', 'max:255'],
+            'name_last' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        $user = User::create([
+            'username' => $validated['username'],
+            'name_first' => $validated['name_first'],
+            'name_last' => $validated['name_last'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
-        event(new Registered(($user = User::create($validated))));
+        event(new Registered($user));
 
         Auth::login($user);
 
         $this->redirect(route('dashboard', absolute: false), navigate: true);
+    }
+
+    public function render()
+    {
+        return view('livewire.auth.register');
     }
 }

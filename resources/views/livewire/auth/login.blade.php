@@ -29,7 +29,7 @@
             />
 
             @if (Route::has('password.request'))
-                <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
+                <flux:link class="absolute end-0 top-0 text-sm text-zinc-600 dark:text-zinc-400" :href="route('password.request')" wire:navigate>
                     {{ __('Forgot your password?') }}
                 </flux:link>
             @endif
@@ -43,17 +43,11 @@
         </div>
     </form>
 
-    @if (Route::has('register'))
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <span>{{ __('Don\'t have an account?') }}</span>
-            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
-        </div>
-    @endif
-    <div class="mt-6 border-t border-gray-200 pt-6">
-        <p class="text-center text-gray-500 mb-4">Or login with social accounts</p>
+    <div class="mt-6 border-t border-gray-200 dark:border-zinc-700 pt-6">
+        <p class="text-center text-zinc-600 dark:text-zinc-400 mb-4">{{ __('Or login with social accounts') }}</p>
         <div class="flex justify-center space-x-4">
             <a href="{{ route('socialite.redirect', ['provider' => 'github']) }}"
-               class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+               class="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-700"> {{-- Added dark mode classes --}}
                 <img src="/icons/github-logo.svg" alt="GitHub" class="h-5 w-5 mr-2">
                 GitHub
             </a>
@@ -71,8 +65,15 @@
     </div>
 
     @if (session('error'))
-        <div class="mt-4 text-red-500 text-sm">
+        <div class="mt-4 text-red-500 text-sm text-center">
             {{ session('error') }}
+        </div>
+    @endif
+
+    @if (Route::has('register'))
+        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
+            <span>{{ __('Don\'t have an account?') }}</span>
+            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
         </div>
     @endif
 </div>
