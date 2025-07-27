@@ -8,18 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('user_badges', function (Blueprint $table) {
+        Schema::create('follows', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('badge_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('follower_id')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('following_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['user_id', 'badge_id']);
+            $table->unique(['follower_id', 'following_id']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('user_badges');
+        Schema::dropIfExists('follows');
     }
 };
