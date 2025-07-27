@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name_last')->nullable();
             $table->string('email')->unique();
             $table->string('avatar')->nullable();
+            $table->enum('role', ['user', 'admin'])->default('user');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('discord_id')->nullable();
