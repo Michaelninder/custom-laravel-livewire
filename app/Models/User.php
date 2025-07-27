@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -59,15 +60,29 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's initials
+     * Get the user's initials.
+     * Uses name_first and name_last, or falls back to username.
      */
     public function initials(): string
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
-            ->implode('');
+        $initials = '';
+
+        if (!empty($this->name_first)) {
+            $initials .= Str::upper(Str::substr($this->name_first, 0, 1));
+        }
+
+        if (!empty($this->name_last)) {
+            $initials .= Str::upper(Str::substr($this->name_last, 0, 1));
+        }
+
+        if (empty($initials) && !empty($this->username)) {
+            $initials = Str::upper(Str::substr($this->username, 0, 1));
+        } elseif (empty($initials) && !empty($this->email)) {
+             $initials = Str::upper(Str::substr($this->email, 0, 1));
+        }
+
+
+        return $initials;
     }
 
     public function getAvatarAttribute()
@@ -105,12 +120,21 @@ class User extends Authenticatable
 
     public function getDisplayNameAttribute(): string
     {
-        return $this->name_first . ' ' . $this->name_last;
+        // Prioritize full name, then username, then email if nothing else
+        if (!empty($this->name_first) || !empty($this->name_last)) {
+            return trim($this->name_first . ' ' . $this->name_last);
+        }
+
+        if (!empty($this->username)) {
+            return $this->username;
+        }
+
+        return $this->email; // Fallback to email if no name or username
     }
 
     public function getProfileLinkAttribute(): string
     {
-        return $this->handle ? route('profile', ['handle' => $this->handle]) : route('profile', ['id' => $this->id]);
+        return $this->handle ? route('profile.handle', ['handle' => $this->handle]) : route('profile.id', ['user' => $this->id]);
     }
 
     public function badges(): BelongsToMany
