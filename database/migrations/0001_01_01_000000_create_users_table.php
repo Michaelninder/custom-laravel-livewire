@@ -22,8 +22,14 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('discord_id')->nullable();
+            $table->string('discord_username')->nullable();
+            $table->string('discord_avatar')->nullable();
             $table->string('github_id')->nullable();
+            $table->string('github_username')->nullable();
+            $table->string('github_avatar')->nullable();
             $table->string('twitch_id')->nullable();
+            $table->string('twitch_username')->nullable();
+            $table->string('twitch_avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
