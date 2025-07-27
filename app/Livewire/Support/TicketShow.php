@@ -4,6 +4,7 @@ namespace App\Livewire\Support;
 
 use App\Models\SupportTicket;
 use App\Models\SupportMessage;
+use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -70,11 +71,31 @@ class TicketShow extends Component
         session()->flash('settings_updated', __('Ticket settings updated successfully.'));
     }
 
+    public function closeTicket(): void
+    {
+        if (!Auth::user()->isAdmin() && $this->ticket->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized to close this ticket.');
+        }
+
+        $this->ticket->update(['status' => 'closed', 'last_replied_at' => now()]);
+        $this->selectedStatus = 'closed';
+        session()->flash('status_updated', __('Ticket has been closed.'));
+    }
+
+    public function reopenTicket(): void
+    {
+        if (!Auth::user()->isAdmin() && $this->ticket->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized to reopen this ticket.');
+        }
+
+        $this->ticket->update(['status' => 'open', 'last_replied_at' => now()]);
+        $this->selectedStatus = 'open';
+        session()->flash('status_updated', __('Ticket has been reopened.'));
+    }
+
     public function getListeners()
     {
-        return [
-            'messageSent' => '$refresh',
-        ];
+        return ['messageSent' => '$refresh'];
     }
 
     public function render()
@@ -86,9 +107,15 @@ class TicketShow extends Component
             $supportAgents = User::where('role', 'admin')->get(['id', 'username']);
         }
 
+        $breadcrumbs = [
+            ['label' => __('Support'), 'url' => route('support.tickets.index')],
+            ['label' => __('Tickets'), 'url' => route('support.tickets.index')],
+            ['label' => $this->ticket->subject],
+        ];
 
         return view('livewire.support.ticket-show', [
             'supportAgents' => $supportAgents,
+            'breadcrumbs' => $breadcrumbs,
         ]);
     }
 }

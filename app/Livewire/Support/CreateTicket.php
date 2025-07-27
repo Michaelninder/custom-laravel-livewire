@@ -3,18 +3,19 @@
 namespace App\Livewire\Support;
 
 use App\Models\SupportTicket;
+use App\Models\SupportMessage;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 
 class CreateTicket extends Component
 {
     public string $subject = '';
-    public string $description = '';
+    public string $first_message = '';
     public string $priority = 'medium';
 
     protected array $rules = [
         'subject' => 'required|string|max:255',
-        'description' => 'nullable|string|max:2000',
+        'first_message' => 'required|string|max:2000',
         'priority' => 'required|string|in:low,medium,high,urgent',
     ];
 
@@ -25,10 +26,16 @@ class CreateTicket extends Component
         $ticket = SupportTicket::create([
             'user_id' => Auth::id(),
             'subject' => $validated['subject'],
-            'description' => $validated['description'],
+            // 'description'
             'priority' => $validated['priority'],
             'status' => 'open',
             'last_replied_at' => now(),
+        ]);
+
+        SupportMessage::create([
+            'support_ticket_id' => $ticket->id,
+            'user_id' => Auth::id(),
+            'message' => $validated['first_message'],
         ]);
 
         session()->flash('success', __('Your support ticket has been created!'));
@@ -38,6 +45,12 @@ class CreateTicket extends Component
 
     public function render()
     {
-        return view('livewire.support.create-ticket');
+        $breadcrumbs = [
+            ['label' => __('Support'), 'url' => route('support.tickets.index')],
+            ['label' => __('Tickets'), 'url' => route('support.tickets.index')],
+            ['label' => __('Create New Ticket')],
+        ];
+
+        return view('livewire.support.create-ticket', ['breadcrumbs' => $breadcrumbs]);
     }
 }

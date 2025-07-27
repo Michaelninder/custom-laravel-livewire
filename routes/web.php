@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('support')->name('support.')->group(function () {
         Route::get('tickets', TicketsIndex::class)->name('tickets.index');
         Route::get('tickets/create', CreateTicket::class)->name('tickets.create');
-        Route::get('tickets/{ticket}', TicketShow::class)->name('tickets.show'); // Uses route model binding
+        Route::get('tickets/{ticket}', TicketShow::class)->name('tickets.show');
     });
 });
 

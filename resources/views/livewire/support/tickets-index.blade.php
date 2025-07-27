@@ -1,13 +1,15 @@
 <div class="container mx-auto p-6">
+    <x-breadcrumbs :items="$breadcrumbs" />
+
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">{{ __('Support Tickets') }}</h1>
         <a href="{{ route('support.tickets.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">{{ __('New Ticket') }}</a>
     </div>
 
     <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <input type="text" wire:model.live="search" placeholder="{{ __('Search tickets...') }}" class="form-input rounded-md shadow-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-100">
+        <input type="text" wire:model.live="search" placeholder="{{ __('Search tickets...') }}" class="p-2 border border-gray-300 rounded-md shadow-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 
-        <select wire:model.live="statusFilter" class="form-select rounded-md shadow-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-100">
+        <select wire:model.live="statusFilter" class="p-2 border border-gray-300 rounded-md shadow-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             <option value="">{{ __('All Statuses') }}</option>
             <option value="open">{{ __('Open') }}</option>
             <option value="pending">{{ __('Pending') }}</option>
@@ -15,7 +17,7 @@
             <option value="resolved">{{ __('Resolved') }}</option>
         </select>
 
-        <select wire:model.live="priorityFilter" class="form-select rounded-md shadow-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-100">
+        <select wire:model.live="priorityFilter" class="p-2 border border-gray-300 rounded-md shadow-sm dark:bg-zinc-800 dark:border-zinc-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             <option value="">{{ __('All Priorities') }}</option>
             <option value="low">{{ __('Low') }}</option>
             <option value="medium">{{ __('Medium') }}</option>

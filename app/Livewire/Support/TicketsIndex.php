@@ -32,8 +32,7 @@ class TicketsIndex extends Component
 
     public function render()
     {
-        $query = SupportTicket::query()
-            ->with(['user', 'assignedAgent']);
+        $query = SupportTicket::query()->with(['user', 'assignedAgent']);
 
         if (!Auth::user()->isAdmin()) {
             $query->where('user_id', Auth::id());
@@ -41,8 +40,7 @@ class TicketsIndex extends Component
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('subject', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%');
+                $q->where('subject', 'like', '%' . $this->search . '%')->orWhere('description', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -56,8 +54,14 @@ class TicketsIndex extends Component
 
         $tickets = $query->latest('last_replied_at')->paginate(10);
 
+        $breadcrumbs = [
+            ['label' => __('Support'), 'url' => route('support.tickets.index')],
+            ['label' => __('Tickets')],
+        ];
+
         return view('livewire.support.tickets-index', [
             'tickets' => $tickets,
+            'breadcrumbs' => $breadcrumbs,
         ]);
     }
 }

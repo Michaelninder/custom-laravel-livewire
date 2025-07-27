@@ -179,4 +179,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SupportMessage::class, 'user_id');
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }
