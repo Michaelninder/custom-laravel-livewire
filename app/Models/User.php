@@ -2,60 +2,64 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
+        'username',
+        'name_first',
+        'name_last',
         'email',
+        'avatar_url',
+        'role',
         'password',
+        'discord_id',
+        'discord_username',
+        'discord_avatar',
+        'github_id',
+        'github_username',
+        'github_avatar',
+        'twitch_id',
+        'twitch_username',
+        'twitch_avatar',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
-    /**
-     * Get the user's initials
-     */
-    public function initials(): string
+    public function getAvatarAttribute()
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
-            ->implode('');
+        if ($this->avatar_url) {
+            return $this->avatar_url;
+        }
+
+        if ($this->discord_avatar) {
+            return $this->discord_avatar;
+        }
+
+        if ($this->github_avatar) {
+            return $this->github_avatar;
+        }
+
+        if ($this->twitch_avatar) {
+            return $this->twitch_avatar;
+        }
+
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=mp';
     }
 }
