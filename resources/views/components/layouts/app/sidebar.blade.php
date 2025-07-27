@@ -17,6 +17,18 @@
                     <flux:navlist.item icon="home" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>{{ __('nav.ticket_support') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
+            @if (Auth()->user()->isAdmin())
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('nav.admin_area')">
+                    <flux:navlist.item icon="" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>
+                        {{ __('nav.admin_dashboard') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="cog" :href="route('admin.settings')" :current="request()->routeIs('admin.settings')" wire:navigate>
+                        {{ __('nav.admin_site_settings') }}
+                    </flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+            @endif
 
             <flux:spacer />
 
