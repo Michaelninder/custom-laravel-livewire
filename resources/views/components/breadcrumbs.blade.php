@@ -4,8 +4,10 @@
     <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
         <li class="inline-flex items-center">
             @php
-                $isAdminRoute = request()->routeIs('admin.*');
-                $isAdminMainRoute = request()->routeIs('admin.dashboard');
+                //$isAdminRoute = request()->routeIs('admin.*');
+                //$isAdminMainRoute = request()->routeIs('admin.dashboard');
+                $isAdminRoute = false;
+                $isAdminMainRoute = false;
                 $dashboardRoute = $isAdminRoute ? route('admin.dashboard') : route('dashboard');
                 $dashboardLabel = $isAdminRoute ? __('nav.admin_area') : __('nav.dashboard');
             @endphp
@@ -16,7 +18,7 @@
                 {{ $dashboardLabel }}
             </a>
         </li>
-        @if (!$isAdminMainRoute)
+        {{--@if (!$isAdminMainRoute)--}}
         @foreach ($items as $item)
             <li class="inline-flex items-center">
                 <div class="flex items-center">
@@ -35,6 +37,6 @@
                 </div>
             </li>
         @endforeach
-        @endif
+        {{--@endif--}}
     </ol>
 </nav>
