@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'general_title' => 'Support',
+    'tickets_index_title' => 'Support-Tickets',
+    'create_ticket_title' => 'Neues Ticket erstellen',
+    'field_subject' => 'Betreff',
+    'field_first_message' => 'Erste Nachricht',
+    'all_statuses_option' => 'Alle Stati',
+    'all_priorities_option' => 'Alle Prioritäten',
+    'no_tickets_found' => 'Keine Support-Tickets gefunden.',
+    'status_title' => 'Status',
+    'ticket_details_title' => 'Ticket-Details',
+    'current_status' => 'Aktueller Status',
+    'current_priority' => 'Aktuelle Priorität',
+    'conversation_title' => 'Konversation',
+    'no_messages_yet' => 'Noch keine Nachrichten. Senden Sie die erste!',
+    'no_conversation_history' => 'Keine Konversationshistorie.',
+    'admin_actions_title' => 'Admin-Aktionen',
+    'update_status_field' => 'Status aktualisieren',
+    'update_priority_field' => 'Priorität aktualisieren',
+    'assign_agent_field' => 'Agent zuweisen',
+    'reopen_ticket_button' => 'Ticket wiedereröffnen',
+    'close_ticket_button' => 'Ticket schließen',
+
+    // Flash messages and log entries
+    'ticket_created_success' => 'Ihr Support-Ticket wurde erstellt!',
+    'cannot_send_on_closed' => 'Nachrichten können in einem geschlossenen oder gelösten Ticket nicht gesendet werden. Bitte öffnen Sie es wieder.',
+    'ticket_already_closed' => 'Ticket ist bereits geschlossen.',
+    'ticket_not_closed_resolved' => 'Ticket ist nicht geschlossen oder gelöst.',
+    'settings_updated_success' => 'Ticket-Einstellungen erfolgreich aktualisiert.',
+    'ticket_closed_success' => 'Ticket wurde geschlossen.',
+    'ticket_reopened_success' => 'Ticket wurde wiedereröffnet.',
+
+    // Log messages (dynamically constructed)
+    'log_ticket_created' => ':user hat das Ticket erstellt.',
+    'log_status_change' => ':user hat den Status von :old_status zu :new_status geändert.',
+    'log_priority_change' => ':user hat die Priorität von :old_priority zu :new_priority geändert.',
+    'log_assignment_change' => ':user hat die Zuweisung von :old_agent zu :new_agent geändert.',
+    'log_closed_ticket' => ':user hat das Ticket geschlossen.',
+    'log_reopened_ticket' => ':user hat das Ticket wiedereröffnet.',
+    'log_ticket_updated_prefix' => ':user hat das Ticket aktualisiert:',
+    'log_update_item_status' => 'Status geändert von :old zu :new',
+    'log_update_item_priority' => 'Priorität geändert von :old zu :new',
+    'log_update_item_assigned_to' => 'Zugewiesen an geändert von :old zu :new',
+];

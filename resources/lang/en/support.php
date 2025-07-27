@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'general_title' => 'Support',
+    'tickets_index_title' => 'Support Tickets',
+    'create_ticket_title' => 'Create New Ticket',
+    'field_subject' => 'Subject',
+    'field_first_message' => 'First Message',
+    'all_statuses_option' => 'All Statuses',
+    'all_priorities_option' => 'All Priorities',
+    'no_tickets_found' => 'No support tickets found.',
+    'status_title' => 'Status',
+    'ticket_details_title' => 'Ticket Details',
+    'current_status' => 'Current Status',
+    'current_priority' => 'Current Priority',
+    'conversation_title' => 'Conversation',
+    'no_messages_yet' => 'No messages yet. Send the first one!',
+    'no_conversation_history' => 'No conversation history.',
+    'admin_actions_title' => 'Admin Actions',
+    'update_status_field' => 'Update Status',
+    'update_priority_field' => 'Update Priority',
+    'assign_agent_field' => 'Assign Agent',
+    'reopen_ticket_button' => 'Reopen Ticket',
+    'close_ticket_button' => 'Close Ticket',
+
+    // Flash messages and log entries
+    'ticket_created_success' => 'Your support ticket has been created!',
+    'cannot_send_on_closed' => 'Cannot send messages on a closed or resolved ticket. Please reopen it.',
+    'ticket_already_closed' => 'Ticket is already closed.',
+    'ticket_not_closed_resolved' => 'Ticket is not closed or resolved.',
+    'settings_updated_success' => 'Ticket settings updated successfully.',
+    'ticket_closed_success' => 'Ticket has been closed.',
+    'ticket_reopened_success' => 'Ticket has been reopened.',
+
+    // Log messages (dynamically constructed)
+    'log_ticket_created' => ':user created the ticket.',
+    'log_status_change' => ':user changed status from :old_status to :new_status.',
+    'log_priority_change' => ':user changed priority from :old_priority to :new_priority.',
+    'log_assignment_change' => ':user changed assignment from :old_agent to :new_agent.',
+    'log_closed_ticket' => ':user closed the ticket.',
+    'log_reopened_ticket' => ':user reopened the ticket.',
+    'log_ticket_updated_prefix' => ':user updated ticket:',
+    'log_update_item_status' => 'status changed from :old to :new',
+    'log_update_item_priority' => 'priority changed from :old to :new',
+    'log_update_item_assigned_to' => 'assigned to changed from :old to :new',
+];
