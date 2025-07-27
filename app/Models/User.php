@@ -15,11 +15,15 @@ class User extends Authenticatable
 
     protected $fillable = [
         'username',
+        'handle',
         'name_first',
         'name_last',
         'email',
         'avatar_url',
         'role',
+        'bio',
+        'location',
+        'website',
         'password',
         'discord_id',
         'discord_username',
@@ -75,5 +79,15 @@ class User extends Authenticatable
         $settings = $this->settings ?? [];
         $settings[$key] = $value;
         $this->settings = $settings;
+    }
+
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->name_first . ' ' . $this->name_last;
+    }
+
+    public function getProfileLinkAttribute(): string
+    {
+        return $this->handle ? route('profile', ['handle' => $this->handle]) : route('profile', ['id' => $this->id]);
     }
 }

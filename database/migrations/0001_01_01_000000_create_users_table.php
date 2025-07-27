@@ -14,11 +14,15 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('username');
+            $table->string('handle')->unique()->nullable();
             $table->string('name_first')->nullable();
             $table->string('name_last')->nullable();
             $table->string('email')->unique();
             $table->string('avatar_url')->nullable();
             $table->enum('role', ['user', 'admin'])->default('user');
+            $table->text('bio')->nullable();
+            $table->string('location')->nullable();
+            $table->string('website')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->string('discord_id')->nullable();
