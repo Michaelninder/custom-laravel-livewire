@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('twitch_id')->nullable();
             $table->string('twitch_username')->nullable();
             $table->string('twitch_avatar')->nullable();
+            $table->json('settings')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

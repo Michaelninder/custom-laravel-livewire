@@ -30,6 +30,7 @@ class User extends Authenticatable
         'twitch_id',
         'twitch_username',
         'twitch_avatar',
+        'settings',
     ];
 
     protected $hidden = [
@@ -40,6 +41,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'settings' => 'array',
     ];
 
     public function getAvatarAttribute()
@@ -61,5 +63,17 @@ class User extends Authenticatable
         }
 
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=mp';
+    }
+
+    public function getSetting(string $key, $default = null)
+    {
+        return $this->settings[$key] ?? $default;
+    }
+
+    public function setSetting(string $key, $value): void
+    {
+        $settings = $this->settings ?? [];
+        $settings[$key] = $value;
+        $this->settings = $settings;
     }
 }
