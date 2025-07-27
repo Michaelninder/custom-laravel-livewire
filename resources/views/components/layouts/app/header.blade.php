@@ -15,6 +15,9 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="layout-grid" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>
+                    {{ __('Ticket Support') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
@@ -54,7 +57,7 @@
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
+                                    <span class="truncate font-semibold">{{ auth()->user()->name_displayed }}</span>
                                     <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>
@@ -91,6 +94,9 @@
                 <flux:navlist.group :heading="__('Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                       {{ __('Dashboard') }}
+                    </flux:navlist.item>
+                    <flux:navlist.item icon="layout-grid" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>
+                      {{ __('Ticket Support') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

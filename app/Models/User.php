@@ -184,4 +184,19 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function name_displayed()
+    {
+        if ($this->name_first) {
+            if ($this->name_last) {
+                $dpn =  $this->name_first . $this->name_last;
+            } else {
+                $dpn = $this->name_first;
+            };
+        } else {
+            $dpn = $this->username;
+        };
+
+        return $dpn;
+    }
 }
