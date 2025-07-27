@@ -1,19 +1,61 @@
 <section class="w-full">
     @include('partials.settings-heading')
 
-    <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
+    <x-settings.layout :heading="__('Profile')" :subheading="__('Update your account information, public profile details, and email address.')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
+            <!-- Username -->
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                <flux:input
+                    wire:model="username"
+                    :label="__('Username')"
+                    type="text"
+                    required
+                    autofocus
+                    autocomplete="username"
+                    :placeholder="__('Unique username')"
+                />
+            </div>
 
-                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
+            <!-- First Name & Last Name (Side by Side) -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <flux:input
+                        wire:model="name_first"
+                        :label="__('First Name')"
+                        type="text"
+                        autocomplete="given-name"
+                        :placeholder="__('Your first name (optional)')"
+                    />
+                </div>
+                <div class="flex-1">
+                    <flux:input
+                        wire:model="name_last"
+                        :label="__('Last Name')"
+                        type="text"
+                        autocomplete="family-name"
+                        :placeholder="__('Your last name (optional)')"
+                    />
+                </div>
+            </div>
+
+            <!-- Email Address -->
+            <div>
+                <flux:input
+                    wire:model="email"
+                    :label="__('Email address')"
+                    type="email"
+                    required
+                    autocomplete="email"
+                    placeholder="email@example.com"
+                />
+
+                @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
                     <div>
-                        <flux:text class="mt-4">
+                        <flux:text class="mt-4 text-gray-800 dark:text-gray-200">
                             {{ __('Your email address is unverified.') }}
 
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
+                            <flux:link class="text-sm cursor-pointer underline text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" wire:click.prevent="resendVerificationNotification"> {{-- Added more styling --}}
                                 {{ __('Click here to re-send the verification email.') }}
                             </flux:link>
                         </flux:text>
@@ -27,10 +69,53 @@
                 @endif
             </div>
 
+            <!-- Handle -->
+            <div>
+                <flux:input
+                    wire:model="handle"
+                    :label="__('Profile Handle (@)')"
+                    type="text"
+                    autocomplete="off"
+                    :placeholder="__('e.g. your_username')"
+                />
+                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    {{ __('Your unique public profile handle (e.g., ' . env('APP_URL') . '/@your_username). Leave empty for default.') }}
+                </p>
+            </div>
+
+            <!-- Bio -->
+            <div>
+                <flux:input
+                    wire:model="bio"
+                    :label="__('Bio')"
+                    type="textarea"
+                    rows="3"
+                    :placeholder="__('Tell us about yourself')"
+                />
+            </div>
+
+            <!-- Location -->
+            <div>
+                <flux:input
+                    wire:model="location"
+                    :label="__('Location')"
+                    type="text"
+                    :placeholder="__('e.g. London, UK')"
+                />
+            </div>
+
+            <!-- Website -->
+            <div>
+                <flux:input
+                    wire:model="website"
+                    :label="__('Website')"
+                    type="url"
+                    :placeholder="__('https://yourwebsite.com')"
+                />
+            </div>
+
             <div class="flex items-center gap-4">
-                <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}</flux:button>
-                </div>
+                <flux:button variant="primary" type="submit">{{ __('Save') }}</flux:button>
 
                 <x-action-message class="me-3" on="profile-updated">
                     {{ __('Saved.') }}

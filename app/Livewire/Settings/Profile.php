@@ -10,17 +10,31 @@ use Livewire\Component;
 
 class Profile extends Component
 {
-    public string $name = '';
-
+    public string $username = '';
+    public ?string $name_first = null;
+    public ?string $name_last = null;
     public string $email = '';
+
+    public ?string $bio = null;
+    public ?string $location = null;
+    public ?string $website = null;
+    public ?string $handle = null;
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+
+        $this->username = $user->username;
+        $this->name_first = $user->name_first;
+        $this->name_last = $user->name_last;
+        $this->email = $user->email;
+        $this->bio = $user->bio;
+        $this->location = $user->location;
+        $this->website = $user->website;
+        $this->handle = $user->handle;
     }
 
     /**
@@ -31,8 +45,9 @@ class Profile extends Component
         $user = Auth::user();
 
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-
+            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'name_first' => ['nullable', 'string', 'max:255'],
+            'name_last' => ['nullable', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
@@ -41,7 +56,15 @@ class Profile extends Component
                 'max:255',
                 Rule::unique(User::class)->ignore($user->id),
             ],
+            'bio' => ['nullable', 'string', 'max:1000'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'website' => ['nullable', 'string', 'max:255', 'url'],
+            'handle' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique(User::class)->ignore($user->id)],
         ]);
+
+        if (isset($validated['handle']) && $validated['handle'] === '') {
+            $validated['handle'] = null;
+        }
 
         $user->fill($validated);
 
@@ -51,7 +74,16 @@ class Profile extends Component
 
         $user->save();
 
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated',
+            username: $user->username,
+            name_first: $user->name_first,
+            name_last: $user->name_last,
+            email: $user->email,
+            bio: $user->bio,
+            location: $user->location,
+            website: $user->website,
+            handle: $user->handle,
+        );
     }
 
     /**
@@ -70,5 +102,10 @@ class Profile extends Component
         $user->sendEmailVerificationNotification();
 
         Session::flash('status', 'verification-link-sent');
+    }
+
+    public function render()
+    {
+        return view('livewire.settings.profile');
     }
 }
