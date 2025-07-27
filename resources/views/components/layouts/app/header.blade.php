@@ -13,26 +13,26 @@
 
             <flux:navbar class="-mb-px max-lg:hidden">
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
+                    {{ __('nav.dashboard') }}
                 </flux:navbar.item>
                 <flux:navbar.item icon="layout-grid" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>
-                    {{ __('Ticket Support') }}
+                    {{ __('nav.ticket_support') }}
                 </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
 
             <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-                <flux:tooltip :content="__('Search')" position="bottom">
-                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
+                <flux:tooltip :content="__('strings.search_placeholder')" position="bottom">
+                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('strings.search_placeholder')" />
                 </flux:tooltip>
-                <flux:tooltip :content="__('Repository')" position="bottom">
+                <flux:tooltip :content="__('nav.repository')" position="bottom">
                     <flux:navbar.item
                         class="h-10 max-lg:hidden [&>div>svg]:size-5"
                         icon="folder-git-2"
                         href="https://github.com/Michaelninder/custom-laravel-livewire"
                         target="_blank"
-                        :label="__('Repository')"
+                        :label="__('nav.repository')"
                     />
                 </flux:tooltip>
             </flux:navbar>
@@ -48,12 +48,11 @@
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    {{-- Use avatar here --}}
                                     <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->display_name }}" class="h-full w-full object-cover">
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->display_name }}</span> {{-- Changed to display_name --}}
+                                    <span class="truncate font-semibold">{{ auth()->user()->display_name }}</span>
                                     <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>
@@ -63,7 +62,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('nav.settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -71,7 +70,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('nav.logout') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -86,12 +85,12 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
+                <flux:navlist.group :heading="__('nav.platform_group')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                      {{ __('Dashboard') }}
+                      {{ __('nav.dashboard') }}
                     </flux:navlist.item>
                     <flux:navlist.item icon="layout-grid" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>
-                      {{ __('Ticket Support') }}
+                      {{ __('nav.ticket_support') }}
                     </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
@@ -100,7 +99,7 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/Michaelninder/custom-laravel-livewire" target="_blank">
-                    {{ __('Repository') }}
+                    {{ __('nav.repository') }}
                 </flux:navlist.item>
             </flux:navlist>
         </flux:sidebar>

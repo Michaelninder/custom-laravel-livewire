@@ -2,13 +2,13 @@
 
 return [
     'dashboard' => 'Dashboard',
-    'ticket_support' => 'Ticket-Support',
-    'settings' => 'Einstellungen',
+    'ticket_support' => 'Ticket Support',
+    'settings' => 'Settings',
     'repository' => 'Repository',
-    'profile' => 'Profil',
-    'password' => 'Passwort',
-    'appearance' => 'Erscheinungsbild',
-    'preferences' => 'Präferenzen',
-    'logout' => 'Abmelden',
-    'platform_group' => 'Plattform',
+    'profile' => 'Profile',
+    'password' => 'Password',
+    'appearance' => 'Appearance',
+    'preferences' => 'Preferences',
+    'logout' => 'Log Out',
+    'platform_group' => 'Platform',
 ];

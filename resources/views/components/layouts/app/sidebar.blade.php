@@ -12,9 +12,9 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>{{ __('Ticket Support') }}</flux:navlist.item>
+                <flux:navlist.group :heading="__('nav.platform_group')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('nav.dashboard') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('support.tickets.index')" :current="request()->routeIs('support.tickets.*')" wire:navigate>{{ __('nav.ticket_support') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
@@ -22,13 +22,13 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/Michaelninder/custom-laravel-livewire" target="_blank">
-                {{ __('Repository') }}
+                {{ __('nav.repository') }}
                 </flux:navlist.item>
             </flux:navlist>
 
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
                 <flux:profile
-                    :name="auth()->user()->display_name" {{-- Changed to display_name --}}
+                    :name="auth()->user()->display_name"
                     :initials="auth()->user()->initials()"
                     icon:trailing="chevrons-up-down"
                 />
@@ -38,12 +38,11 @@
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    {{-- Use avatar here --}}
                                     <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->display_name }}" class="h-full w-full object-cover">
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->display_name }}</span> {{-- Changed to display_name --}}
+                                    <span class="truncate font-semibold">{{ auth()->user()->display_name }}</span>
                                     <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>
@@ -53,7 +52,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('nav.settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -61,7 +60,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('nav.logout') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
@@ -84,12 +83,11 @@
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    {{-- Use avatar here --}}
                                     <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->display_name }}" class="h-full w-full object-cover">
                                 </span>
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->display_name }}</span> {{-- Changed to display_name --}}
+                                    <span class="truncate font-semibold">{{ auth()->user()->display_name }}</span>
                                     <span class="truncate text-xs">{{ auth()->user()->email }}</span>
                                 </div>
                             </div>
@@ -99,7 +97,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('nav.settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -107,7 +105,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
+                            {{ __('nav.logout') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>
