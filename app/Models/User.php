@@ -90,4 +90,10 @@ class User extends Authenticatable
     {
         return $this->handle ? route('profile', ['handle' => $this->handle]) : route('profile', ['id' => $this->id]);
     }
+    
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges', 'user_id', 'badge_id')
+                    ->withTimestamps();
+    }
 }
