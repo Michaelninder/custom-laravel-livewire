@@ -22,13 +22,17 @@
                         $isAuthUser = ($message->user->id === Auth::id());
                         $isAdminUser = $message->user->isAdmin();
                         $isAuthAdmin = Auth::user()->isAdmin();
+                        $isLogMessage = Str::startsWith($message->message, '[LOG] ');
 
                         $bubbleClasses = 'max-w-[80%] rounded-xl p-3 shadow-sm';
                         $wrapperClasses = 'flex items-start';
                         $timestampClasses = 'font-normal text-[10px] ml-2';
 
-                        // Base coloring
-                        if ($isAuthUser) {
+                        if ($isLogMessage) {
+                            $wrapperClasses = 'flex justify-center w-full';
+                            $bubbleClasses = 'bg-gray-100 dark:bg-zinc-700 text-gray-600 dark:text-gray-400 text-xs px-3 py-1.5 rounded-full italic max-w-lg';
+                            $timestampClasses = 'hidden';
+                        } elseif ($isAuthUser) {
                             $bubbleClasses .= ' bg-blue-600 text-white dark:bg-blue-700';
                             $timestampClasses .= ' text-blue-200 dark:text-blue-300';
                         } else {
@@ -36,36 +40,49 @@
                             $timestampClasses .= ' text-gray-400 dark:text-gray-500';
                         }
 
-                        // Positioning logic
                         $avatarOrder = '';
+                        $contentOrder = '';
+
+                        // Determine position
                         if ($isAuthAdmin) {
                             if ($isAdminUser) {
                                 $wrapperClasses .= ' justify-end';
                                 $avatarOrder = 'order-2 ml-2';
+                                $contentOrder = 'order-1';
                             } else {
                                 $wrapperClasses .= ' justify-start';
                                 $avatarOrder = 'order-1 mr-2';
+                                $contentOrder = 'order-2';
                             }
                         } else {
                             if ($isAuthUser) {
-                                 $wrapperClasses .= ' justify-end';
-                                 $avatarOrder = 'order-2 ml-2';
+                                $wrapperClasses .= ' justify-end';
+                                $avatarOrder = 'order-2 ml-2';
+                                $contentOrder = 'order-1';
                             } else {
-                                 $wrapperClasses .= ' justify-start';
-                                 $avatarOrder = 'order-1 mr-2';
+                                $wrapperClasses .= ' justify-start';
+                                $avatarOrder = 'order-1 mr-2';
+                                $contentOrder = 'order-2';
                             }
                         }
                     @endphp
-                    <div class="{{ $wrapperClasses }}">
-                        <img class="h-8 w-8 rounded-full object-cover {{ $avatarOrder }}" src="{{ $message->user->avatar }}" alt="{{ $message->user->username }}">
-                        <div class="{{ $bubbleClasses }}">
-                            <p class="text-xs font-semibold {{ $isAuthUser ? 'text-white' : 'text-gray-700 dark:text-gray-300' }}">
-                                {{ $message->user->username }}
-                                <span class="{{ $timestampClasses }}">{{ $message->created_at->format('M d, H:i') }}</span>
-                            </p>
-                            <p class="mt-1 {{ $isAuthUser ? 'text-white' : 'text-gray-800 dark:text-gray-200' }} whitespace-pre-wrap">{{ $message->message }}</p>
+
+                    @if ($isLogMessage)
+                        <div class="{{ $wrapperClasses }}">
+                            <p class="{{ $bubbleClasses }}">{{ Str::after($message->message, '[LOG] ') }}</p>
                         </div>
-                    </div>
+                    @else
+                        <div class="{{ $wrapperClasses }}">
+                            <img class="h-8 w-8 rounded-full object-cover {{ $avatarOrder }}" src="{{ $message->user->avatar }}" alt="{{ $message->user->display_name }}">
+                            <div class="{{ $bubbleClasses }} {{ $contentOrder }}">
+                                <p class="text-xs font-semibold {{ $isAuthUser ? 'text-white' : 'text-gray-700 dark:text-gray-300' }}">
+                                    {{ $message->user->display_name }}
+                                    <span class="{{ $timestampClasses }}">{{ $message->created_at->format('M d, H:i') }}</span>
+                                </p>
+                                <p class="mt-1 {{ $isAuthUser ? 'text-white' : 'text-gray-800 dark:text-gray-200' }} whitespace-pre-wrap">{{ $message->message }}</p>
+                            </div>
+                        </div>
+                    @endif
                 @empty
                     <p class="text-center text-gray-600 dark:text-gray-400">{{ __('No messages yet. Send the first one!') }}</p>
                 @endforelse
@@ -90,7 +107,7 @@
                     'resolved' => 'text-purple-600',
                 ][$ticket->status] ?? '' }}">{{ $ticket->status }}</span></p>
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1">{{ __('Current Priority') }}: <span class="capitalize font-normal">{{ $ticket->priority }}</span></p>
-                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1">{{ __('Assigned to') }}: <span class="font-normal">{{ $ticket->assignedAgent->username ?? __('None') }}</span></p>
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1">{{ __('Assigned to') }}: <span class="font-normal">{{ $ticket->assignedAgent->display_name ?? __('None') }}</span></p>
             </div>
 
             @if ($ticket->status === 'closed' || $ticket->status === 'resolved')
@@ -126,7 +143,7 @@
                         <select wire:model="selectedAgentId" wire:change="updateTicketSettings" class="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-zinc-600 dark:border-zinc-500 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">{{ __('Unassigned') }}</option>
                             @foreach ($supportAgents as $agent)
-                                <option value="{{ $agent->id }}">{{ $agent->username }}</option>
+                                <option value="{{ $agent->id }}">{{ $agent->display_name }}</option>
                             @endforeach
                         </select>
                     </div>

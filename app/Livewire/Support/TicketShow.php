@@ -56,11 +56,15 @@ class TicketShow extends Component
             return;
         }
 
-        $this->validate([
+        $validated = $this->validate([
             'selectedStatus' => ['required', Rule::in(['open', 'pending', 'closed', 'resolved'])],
             'selectedPriority' => ['required', Rule::in(['low', 'medium', 'high', 'urgent'])],
             'selectedAgentId' => ['nullable', Rule::exists('users', 'id')],
         ]);
+
+        $oldStatus = $this->ticket->status;
+        $oldPriority = $this->ticket->priority;
+        $oldAssignedTo = $this->ticket->assigned_to;
 
         $this->ticket->update([
             'status' => $this->selectedStatus,
@@ -68,7 +72,31 @@ class TicketShow extends Component
             'assigned_to' => $this->selectedAgentId,
         ]);
 
+        $logMessage = Auth::user()->display_name;
+
+        $updates = [];
+        if ($oldStatus !== $this->selectedStatus) {
+            $updates[] = __('status changed from :old to :new', ['old' => __($oldStatus), 'new' => __($this->selectedStatus)]);
+        }
+        if ($oldPriority !== $this->selectedPriority) {
+            $updates[] = __('priority changed from :old to :new', ['old' => __($oldPriority), 'new' => __($this->selectedPriority)]);
+        }
+        if ($oldAssignedTo !== $this->selectedAgentId) {
+            $oldAgentName = User::find($oldAssignedTo)?->display_name ?? __('None');
+            $newAgentName = User::find($this->selectedAgentId)?->display_name ?? __('None');
+            $updates[] = __('assigned to changed from :old to :new', ['old' => $oldAgentName, 'new' => $newAgentName]);
+        }
+
+        if (!empty($updates)) {
+            $logMessage .= ' ' . __('updated ticket:');
+            foreach ($updates as $update) {
+                $logMessage .= "\n- " . $update;
+            }
+            $this->createLogMessage($logMessage);
+        }
+
         session()->flash('settings_updated', __('Ticket settings updated successfully.'));
+        $this->dispatch('messageSent');
     }
 
     public function closeTicket(): void
@@ -79,7 +107,9 @@ class TicketShow extends Component
 
         $this->ticket->update(['status' => 'closed', 'last_replied_at' => now()]);
         $this->selectedStatus = 'closed';
+        $this->createLogMessage(Auth::user()->display_name . ' ' . __('closed the ticket.'));
         session()->flash('status_updated', __('Ticket has been closed.'));
+        $this->dispatch('messageSent');
     }
 
     public function reopenTicket(): void
@@ -90,7 +120,18 @@ class TicketShow extends Component
 
         $this->ticket->update(['status' => 'open', 'last_replied_at' => now()]);
         $this->selectedStatus = 'open';
+        $this->createLogMessage(Auth::user()->display_name . ' ' . __('reopened the ticket.'));
         session()->flash('status_updated', __('Ticket has been reopened.'));
+        $this->dispatch('messageSent');
+    }
+
+    private function createLogMessage(string $logText): void
+    {
+        SupportMessage::create([
+            'support_ticket_id' => $this->ticket->id,
+            'user_id' => Auth::id(),
+            'message' => '[LOG] ' . $logText,
+        ]);
     }
 
     public function getListeners()

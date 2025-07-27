@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL; // Added for asset/url generation
 
 class User extends Authenticatable
 {
@@ -93,6 +94,16 @@ class User extends Authenticatable
             return $this->twitch_avatar;
         }
 
+        $defaultAvatarUrl = env('DEFAULT_USER_AVATAR_URL');
+        if ($defaultAvatarUrl) {
+            // If it's a relative path, use asset() or URL::to()
+            if (!Str::startsWith($defaultAvatarUrl, ['http://', 'https://', '//'])) {
+                return URL::to(asset($defaultAvatarUrl));
+            }
+            return $defaultAvatarUrl;
+        }
+
+        // Fallback to Gravatar if no custom default is set
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?d=mp';
     }
 
@@ -109,7 +120,6 @@ class User extends Authenticatable
         $this->settings = $settings;
     }
 
-    // primary display name
     public function getDisplayNameAttribute(): string
     {
         if (!empty($this->name_first) || !empty($this->name_last)) {
@@ -175,6 +185,4 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
-
-    // Removed getNameDisplayedAttribute() as getDisplayNameAttribute() serves this purpose.
 }

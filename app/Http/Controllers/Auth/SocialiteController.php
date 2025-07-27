@@ -15,7 +15,7 @@ class SocialiteController extends Controller
 {
     public function redirect(string $provider): RedirectResponse
     {
-        return Socialite::driver($provider)->redirect();
+	    return Socialite::driver($provider)->scopes(['identify', 'email'])->redirect();
     }
 
     public function callback(string $provider): RedirectResponse
@@ -23,6 +23,7 @@ class SocialiteController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception $e) {
+            \Log::error("Socialite Discord Callback Error: " . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('login')->with('error', 'Authentication failed. Please try again.');
         }
 
