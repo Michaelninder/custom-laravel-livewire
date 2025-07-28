@@ -26,19 +26,22 @@ class Register extends Component
     public function register(): void
     {
         $validated = $this->validate([
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class], // Validate username for uniqueness
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'handle' => ['nullable', 'string', 'max:255', 'unique:'.User::class],
             'name_first' => ['nullable', 'string', 'max:255'],
             'name_last' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $user_handle = $validated['handle'] ?? Str::slug($validated['username']);
         $user = User::create([
             'username' => $validated['username'],
             'name_first' => $validated['name_first'],
             'name_last' => $validated['name_last'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'handle' => $user_handle,
         ]);
 
         event(new Registered($user));

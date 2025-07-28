@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Support\TicketsIndex;
 use App\Livewire\Support\CreateTicket;
 use App\Livewire\Support\TicketShow;
+use App\Http\Controllers\UserProfileController;
 //use App\Livewire\Admin\SiteSettings as AdminSiteSettings;
 //use App\Livewire\Admin\Dashboard as AdminDashboard;
 
@@ -19,13 +20,12 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::get('/@{handle}', function ($handle) {
-    return view('profile', ['handle' => $handle]);
-})->name('profile.handle');
 
-Route::get('/profile/{user}', function (\App\Models\User $user) {
-    return view('profile', ['user' => $user]);
-})->name('profile.id');
+    Route::get('/@{handle}', [UserProfileController::class, 'showByHandle'])->name('profile.handle');
+    Route::get('/profile/{user}', [UserProfileController::class, 'showById'])->name('profile.id');
+    Route::get('/profile/username/{user:username}', [UserProfileController::class, 'showByUsername'])->name('profile.username');
+    Route::get('/user/{user:username}', [UserProfileController::class, 'showByUsername']);
+    Route::get('/user/{handle}', [UserProfileController::class, 'showByHandle']);
 
 
 Route::middleware(['auth'])->group(function () {

@@ -32,4 +32,5 @@ return [
     'total_tickets' => 'Total Tickets',
     'open_tickets' => 'Open Tickets',
     'closed_tickets' => 'Closed Tickets',
+    'user_profile' => 'User Profile',
 ];

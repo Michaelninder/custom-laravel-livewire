@@ -32,4 +32,6 @@ return [
     'total_tickets' => 'Gesamtzahl Tickets',
     'open_tickets' => 'Offene Tickets',
     'closed_tickets' => 'Geschlossene Tickets',
+    'user_profile' => 'Nutzerprofil',
+    //'user_profile' => 'Benutzerprofil',
 ];
