@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 #[Layout('components.layouts.auth')]
 class Register extends Component
@@ -27,7 +28,7 @@ class Register extends Component
     {
         $validated = $this->validate([
             'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
-            'handle' => ['nullable', 'string', 'max:255', 'unique:'.User::class],
+            //'handle' => ['nullable', 'string', 'max:255', 'unique:'.User::class],
             'name_first' => ['nullable', 'string', 'max:255'],
             'name_last' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],

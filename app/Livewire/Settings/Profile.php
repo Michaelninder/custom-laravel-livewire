@@ -39,7 +39,7 @@ class Profile extends Component
         $this->handle = $this->user->handle;
     }
 
-    public function updateProfileInformation(): void
+    public function updateProfileInformation()
     {
         $validated = $this->validate([
             'username' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($this->user->id)],
@@ -90,6 +90,8 @@ class Profile extends Component
             handle: $this->user->handle,
             avatar_url: $this->user->avatar_url,
         );
+
+        return redirect()->to(route('settings.profile'));
     }
 
     public function removeNewAvatar(): void
